@@ -3,54 +3,86 @@ use std::io;
 fn main() {
     println!("Calculadora en Rust");
 
-    // Pedir y leer el primer número
-    println!("Introduce el primer número:");
-    let mut num1 = String::new();
-    io::stdin()
-        .read_line(&mut num1)
-        .expect("Error al leer la línea");
+    // bucle infinito
+    loop {
+        println!("\n----------------------------------------");
+        
+        // Pedir y leer el primer número
+        println!("Introduce el primer número:");
+        let mut input_num1 = String::new();
+        io::stdin()
+            .read_line(&mut input_num1)
+            .expect("Error al leer la línea");
 
-    // Convertir el texto de num1 a un número real
-    let num1: f64 = num1
-        .trim()
-        .parse()
-        .expect("Por favor, introduce un número válido");
+        let num1: f64 = match input_num1.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Por favor, introduce un número válido.");
+                continue;
+            }
+        };
 
-    // Pedir y leer la operación
-    println!("Introduce la operación (+, -, *, /):");
-    let mut operacion = String::new();
-    io::stdin()
-        .read_line(&mut operacion)
-        .expect("Error al leer la línea");
-    
-    // Limpiar los espacios y saltos de línea de la operación
-    let operacion = operacion.trim();
+        //  menu de operaciones
+        println!("Selecciona una operación:");
+        println!("1 - Suma");
+        println!("2 - Resta");
+        println!("3 - Multiplicación");
+        println!("4 - División");
+        println!("5 - Salir del programa");
 
-    // Pedir y leer el segundo número
-    println!("Introduce el segundo número:");
-    let mut num2 = String::new();
-    io::stdin()
-        .read_line(&mut num2)
-        .expect("Error al leer la línea");
+        let mut opcion = String::new();
+        io::stdin()
+            .read_line(&mut opcion)
+            .expect("Error al leer la línea");
 
-    // Convertir el texto de num2 a un número real
-    let num2: f64 = num2
-        .trim()
-        .parse()
-        .expect("Por favor, introduce un número válido");
+        let opcion: u32 = match opcion.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Opción no válida. Debe ser un número del 1 al 5.");
+                continue;
+            }
+        };
 
-    // 4. Hacer la operación
-    let resultado = match operacion {
-        "+" => num1 + num2,
-        "-" => num1 - num2,
-        "*" => num1 * num2,
-        "/" => num1 / num2,
-        _ => {
-            println!("Operación no válida");
-            return; // Sale del programa si la operación no existe
+        // romper ciclo
+        if opcion == 5 {
+            println!("¡Gracias por usar la calculadora! ¡Hasta pronto!");
+            break;
         }
-    };
 
-    //  Mostrar el resultado final
-    println!("El resultado es: {} {} {} = {}", num1, operacion, num2, resultado);
+        // Pedir y leer el segundo número
+        println!("Introduce el segundo número:");
+        let mut num2 = String::new();
+        io::stdin()
+            .read_line(&mut num2)
+            .expect("Error al leer la línea");
+
+        let num2: f64 = match num2.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Por favor, introduce un número válido.");
+                continue;
+            }
+        };
+
+        // pedir y hacer la operación
+        let (resultado, simbolo) = match opcion {
+            1 => (num1 + num2, "+"),
+            2 => (num1 - num2, "-"),
+            3 => (num1 * num2, "*"),
+            4 => {
+                if num2 == 0.0 {
+                    println!("Error: No se puede dividir entre cero.");
+                    continue;
+                }
+                (num1 / num2, "/")
+            },
+            _ => {
+                println!("Opción no válida. Debe ser un número del 1 al 5.");
+                continue;
+            }
+        };
+
+        // Mostrar el resultado final
+        println!(">>> Resultado: {} {} {} = {}", num1, simbolo, num2, resultado);
+    }
 }
